@@ -374,46 +374,79 @@ for d in states:
     if description_parts:
         description = (description + " – " + " · ".join(description_parts))[:160]
 
-    # JSON-LD (WebPage + Country + Breadcrumb)
+    # FAQPage Schema (Sehr gut für "People also ask" Boxen in Google)
+    faq_items = []
+    
+    # Helper für FAQ
+    def add_faq(question_tmpl, key, label_in_answer=None):
+        val = get_single_value(d.get(key))
+        if val:
+            ans = f"{val}."
+            if label_in_answer:
+                ans = f"{label_in_answer} {ans}"
+            faq_items.append({
+                "@type": "Question",
+                "name": question_tmpl.format(name),
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": ans
+                }
+            })
+
+    add_faq("Wie viele Einwohner hat {}?", "einwzahl", "Die Einwohnerzahl beträgt ca.")
+    add_faq("Was ist die Hauptstadt von {}?", "hauptstadt", "Die Hauptstadt ist")
+    add_faq("Welche Währung hat {}?", "waehrung", "Die Währung ist")
+    add_faq("Welche Sprache spricht man in {}?", "amtssprache", "Die Amtssprache ist")
+    add_faq("Wie groß ist {}?", "flaeche", "Die Fläche beträgt")
+
+    # JSON-LD (WebPage + Country + Breadcrumb + FAQPage)
+    graph_nodes = [
+        {
+            "@type": "WebPage",
+            "@id": canonical,
+            "url": canonical,
+            "name": f"{name} – {SITE_NAME}",
+            "description": description,
+            "breadcrumb": {"@id": f"{canonical}#breadcrumb"},
+            "mainEntity": {"@id": f"{canonical}#country"}
+        },
+        {
+            "@type": "Country",
+            "@id": f"{canonical}#country",
+            "name": name,
+            "alternateName": subtitle or None,
+            "description": description,
+            "identifier": get_single_value(d.get("id")) or None
+        },
+        {
+            "@type": "BreadcrumbList",
+            "@id": f"{canonical}#breadcrumb",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Start",
+                    "item": BASE_URL + "/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": name,
+                    "item": canonical
+                }
+            ]
+        }
+    ]
+
+    if faq_items:
+        graph_nodes.append({
+            "@type": "FAQPage",
+            "mainEntity": faq_items
+        })
+
     jsonld_obj = {
         "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "WebPage",
-                "@id": canonical,
-                "url": canonical,
-                "name": f"{name} – {SITE_NAME}",
-                "description": description,
-                "breadcrumb": {"@id": f"{canonical}#breadcrumb"},
-                "mainEntity": {"@id": f"{canonical}#country"}
-            },
-            {
-                "@type": "Country",
-                "@id": f"{canonical}#country",
-                "name": name,
-                "alternateName": subtitle or None,
-                "description": description,
-                "identifier": get_single_value(d.get("id")) or None
-            },
-            {
-                "@type": "BreadcrumbList",
-                "@id": f"{canonical}#breadcrumb",
-                "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "Start",
-                        "item": BASE_URL + "/"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": name,
-                        "item": canonical
-                    }
-                ]
-            }
-        ]
+        "@graph": graph_nodes
     }
     # Clean up None values
     def clean_obj(obj):
