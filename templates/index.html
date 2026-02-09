@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block head %}
+<script type="application/ld+json">
+    {{ jsonld|safe }}
+</script>
+{% endblock %}
 {% block content %}
 <div class="hero-card">
     <h1>Staaten der Welt</h1>

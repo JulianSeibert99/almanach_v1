@@ -374,19 +374,56 @@ for d in states:
     if description_parts:
         description = (description + " – " + " · ".join(description_parts))[:160]
 
-    # JSON-LD
+    # JSON-LD (WebPage + Country + Breadcrumb)
     jsonld_obj = {
         "@context": "https://schema.org",
-        "@type": "Country",
-        "name": name,
-        "alternateName": subtitle or None,
-        "url": canonical,
-        "description": description,
-        "identifier": get_single_value(d.get("id")) or None,
-        "mainEntityOfPage": canonical,
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "@id": canonical,
+                "url": canonical,
+                "name": f"{name} – {SITE_NAME}",
+                "description": description,
+                "breadcrumb": {"@id": f"{canonical}#breadcrumb"},
+                "mainEntity": {"@id": f"{canonical}#country"}
+            },
+            {
+                "@type": "Country",
+                "@id": f"{canonical}#country",
+                "name": name,
+                "alternateName": subtitle or None,
+                "description": description,
+                "identifier": get_single_value(d.get("id")) or None
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": f"{canonical}#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Start",
+                        "item": BASE_URL + "/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": name,
+                        "item": canonical
+                    }
+                ]
+            }
+        ]
     }
-    jsonld_obj = {k: v for k, v in jsonld_obj.items() if v}
-    jsonld = json.dumps(jsonld_obj, ensure_ascii=False)
+    # Clean up None values
+    def clean_obj(obj):
+        if isinstance(obj, dict):
+            return {k: clean_obj(v) for k, v in obj.items() if v is not None}
+        elif isinstance(obj, list):
+            return [clean_obj(i) for i in obj]
+        return obj
+
+    jsonld = json.dumps(clean_obj(jsonld_obj), ensure_ascii=False)
 
     html = tpl_state.render(
         title=f"{name} – {SITE_NAME}",
@@ -408,13 +445,24 @@ for d in states:
     if isinstance(hint, list): hint = hint[0]
     index_cards.append({"name": name, "url": url_path, "hint": str(hint)})
 
+# Index JSON-LD
+index_jsonld_obj = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": BASE_URL + "/",
+    "name": SITE_NAME,
+    "description": "Umfassende Fakten und Statistiken zu allen Staaten der Welt."
+}
+index_jsonld = json.dumps(index_jsonld_obj, ensure_ascii=False)
+
 # Index
 index_html = tpl_index.render(
     title=f"Staaten – {SITE_NAME}",
     description="Übersicht aller Staaten.",
     canonical=f"{BASE_URL}/",
     states=sorted(index_cards, key=lambda x: x["name"].lower()),
-    SITE_ROOT=SITE_ROOT
+    SITE_ROOT=SITE_ROOT,
+    jsonld=index_jsonld
 )
 (OUT_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
