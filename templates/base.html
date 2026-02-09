@@ -19,16 +19,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link rel="stylesheet" href="/assets/style.css" />
+    <link rel="stylesheet" href="{{ SITE_ROOT }}/assets/style.css" />
     {% block head %}{% endblock %}
 </head>
 
 <body>
     <header class="site-header">
         <div class="container">
-            <a class="brand" href="/staaten/">Staaten-Wiki</a>
+            <a class="brand" href="{{ SITE_ROOT }}/">Staaten-Wiki</a>
             <nav class="nav">
-                <a href="/staaten/">Alle Länder</a>
+                <a href="{{ SITE_ROOT }}/">Alle Länder</a>
             </nav>
         </div>
     </header>

@@ -4,11 +4,16 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from urllib.parse import urlparse
 import os
+
 IN_FILE = "staaten-bpb.xml"
 OUT_DIR = Path("dist")
 # BASE_URL wird dynamisch gesetzt (für GitHub Pages z.B. https://username.github.io/repo)
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8080").rstrip("/")
+# SITE_ROOT extrahiert den Pfad-Teil (z. B. /almanach_v1), falls vorhanden
+_parsed_url = urlparse(BASE_URL)
+SITE_ROOT = _parsed_url.path.rstrip("/")
 SITE_NAME = "Staaten-Wiki"
 
 # Mapping von XML-Tag zu lesbarem Label (alle bekannten Felder)
@@ -391,7 +396,8 @@ for d in states:
         subtitle=subtitle or "",
         sections=sections,
         jsonld=jsonld,
-        updated=today
+        updated=today,
+        SITE_ROOT=SITE_ROOT
     )
 
     out_file = OUT_DIR / "staaten" / slug / "index.html"
@@ -406,13 +412,14 @@ for d in states:
 index_html = tpl_index.render(
     title=f"Staaten – {SITE_NAME}",
     description="Übersicht aller Staaten.",
-    canonical=f"{BASE_URL}/staaten/",
-    states=sorted(index_cards, key=lambda x: x["name"].lower())
+    canonical=f"{BASE_URL}/",
+    states=sorted(index_cards, key=lambda x: x["name"].lower()),
+    SITE_ROOT=SITE_ROOT
 )
-(OUT_DIR / "staaten" / "index.html").write_text(index_html, encoding="utf-8")
+(OUT_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
 # sitemap.xml + robots.txt (Google empfiehlt Sitemaps bauen & einreichen)
-urls = [f"{BASE_URL}/staaten/"] + [f"{BASE_URL}{c['url']}" for c in index_cards]
+urls = [f"{BASE_URL}/"] + [f"{BASE_URL}{c['url']}" for c in index_cards]
 sitemap_items = "\n".join(
     f"<url><loc>{u}</loc><lastmod>{today}</lastmod></url>"
     for u in sorted(urls)
