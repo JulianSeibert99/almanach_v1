@@ -484,7 +484,15 @@ index_jsonld_obj = {
     "@type": "WebSite",
     "url": BASE_URL + "/",
     "name": SITE_NAME,
-    "description": "Umfassende Fakten und Statistiken zu allen Staaten der Welt."
+    "description": "Umfassende Fakten und Statistiken zu allen Staaten der Welt.",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": BASE_URL + "/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+    }
 }
 index_jsonld = json.dumps(index_jsonld_obj, ensure_ascii=False)
 

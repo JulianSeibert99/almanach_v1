@@ -35,5 +35,16 @@
             if (matches) visibleCount++;
         }
     }
+
+    // Beim Laden prüfen, ob ein Suchbegriff in der URL ist (?q=...)
+    window.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const q = urlParams.get('q');
+        if (q) {
+            const input = document.getElementById("q");
+            input.value = q;
+            filterList();
+        }
+    });
 </script>
 {% endblock %}
