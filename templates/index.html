@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-card">
+    <h1>Staaten der Welt</h1>
+    <p class="subtitle">Umfassende Fakten und Statistiken zu {{ states|length }} Ländern</p>
+    <div class="search-wrapper">
+        <input
+            type="search"
+            class="search"
+            id="q"
+            placeholder="Land suchen…"
+            oninput="filterList()"
+            autocomplete="off"
+        />
+    </div>
+</div>
+
+<section class="grid" id="list">
+    {% for s in states %}
+    <a class="state-card" data-name="{{ s.name|lower }}" href="{{ s.url }}">
+        <h2>{{ s.name }}</h2>
+        <div class="meta">{{ s.hint }}</div>
+    </a>
+    {% endfor %}
+</section>
+
+<script>
+    function filterList() {
+        const q = (document.getElementById("q").value || "").toLowerCase().trim();
+        const cards = document.querySelectorAll("#list [data-name]");
+        let visibleCount = 0;
+        
+        for (const el of cards) {
+            const matches = el.dataset.name.includes(q);
+            el.style.display = matches ? "" : "none";
+            if (matches) visibleCount++;
+        }
+    }
+</script>
+{% endblock %}

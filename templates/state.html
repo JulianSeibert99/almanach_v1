@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block head %}
+<script type="application/ld+json">
+    {{ jsonld|safe }}
+</script>
+{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h1>{{ name }}</h1>
+    {% if subtitle %}
+    <p class="subtitle">{{ subtitle }}</p>
+    {% endif %}
+
+    {% for section_title, facts in sections %}
+    <section>
+        <h2>{{ section_title }}</h2>
+        <table class="facts">
+            <tbody>
+                {% for k, v in facts %}
+                {% if k == "───1" or k == "───2" or k == "───3" or k == "───" %}
+                <tr
+                    class="subheader {% if k == '───1' %}level-1{% elif k == '───2' %}level-2{% elif k == '───3' %}level-3{% endif %}">
+                    <td colspan="2">{{ v }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <th scope="row">{{ k }}</th>
+                    <td>{{ v }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    {% endfor %}
+
+    {% if updated %}
+    <p class="updated-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+        </svg>
+        Letzte Aktualisierung: {{ updated }}
+    </p>
+    {% endif %}
+</article>
+{% endblock %}
