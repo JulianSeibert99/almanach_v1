@@ -33,9 +33,11 @@ jobs:
           pip install jinja2
 
       - name: Build website
-        run: python build.py
-        env:
-          BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: |
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          BASE_URL="https://$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]').github.io/$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')"
+          echo "Building with BASE_URL: $BASE_URL"
+          BASE_URL=$BASE_URL python build.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
