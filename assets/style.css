@@ -253,9 +253,6 @@ main.container {
 
 .hero-card h1 {
     margin-bottom: var(--space-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
     line-height: 1.2;
 }
 
@@ -266,6 +263,8 @@ main.container {
     border-radius: 4px;
     border: 1px solid #d1d5db;
     box-shadow: var(--shadow-sm);
+    vertical-align: middle;
+    margin-right: var(--space-md);
 }
 
 /* ===== META TEXT ===== */
