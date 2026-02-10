@@ -20,6 +20,10 @@
     </div>
     {% for s in states %}
     <a class="state-card" data-name="{{ s.name|lower }}" href="{{ SITE_ROOT }}{{ s.url }}">
+        {% if s.flag_code %}
+        <img src="https://flagcdn.com/w40/{{ s.flag_code }}.png"
+            srcset="https://flagcdn.com/w80/{{ s.flag_code }}.png 2x" class="flag-icon" alt="Flagge von {{ s.name }}">
+        {% endif %}
         <h2>{{ s.name }}</h2>
         <div class="meta">{{ s.hint }}</div>
     </a>

@@ -7,7 +7,13 @@
 
 {% block content %}
 <article class="card">
-    <h1>{{ name }}</h1>
+    <h1>
+        {% if flag_code %}
+        <img src="https://flagcdn.com/w80/{{ flag_code }}.png" srcset="https://flagcdn.com/w160/{{ flag_code }}.png 2x"
+            class="flag-icon" alt="Flagge von {{ name }}">
+        {% endif %}
+        {{ name }}
+    </h1>
     {% if subtitle %}
     <p class="subtitle">{{ subtitle }}</p>
     {% endif %}

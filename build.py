@@ -16,6 +16,30 @@ _parsed_url = urlparse(BASE_URL)
 SITE_ROOT = _parsed_url.path.rstrip("/")
 SITE_NAME = "Der neue Kosmos Welt-Almanach & Atlas 2026"
 
+# ISO 3316-1 alpha-3 to alpha-2 mapping for FlagCDN
+ISO3_TO_ISO2 = {
+    "AFG": "af", "ALB": "al", "DZA": "dz", "AND": "ad", "AGO": "ao", "ATG": "ag", "ARG": "ar", "ARM": "am", "AUS": "au", "AUT": "at",
+    "AZE": "az", "BHS": "bs", "BHR": "bh", "BGD": "bd", "BRB": "bb", "BLR": "by", "BEL": "be", "BLZ": "bz", "BEN": "bj", "BTN": "bt",
+    "BOL": "bo", "BIH": "ba", "BWA": "bw", "BRA": "br", "BRN": "bn", "BGR": "bg", "BFA": "bf", "BDI": "bi", "CPV": "cv", "KHM": "kh",
+    "CMR": "cm", "CAN": "ca", "CAF": "cf", "TCD": "td", "CHL": "cl", "CHN": "cn", "COL": "co", "COM": "km", "COG": "cg", "COD": "cd",
+    "CRI": "cr", "CIV": "ci", "HRV": "hr", "CUB": "cu", "CYP": "cy", "CZE": "cz", "DNK": "dk", "DJI": "dj", "DMA": "dm", "DOM": "do",
+    "ECU": "ec", "EGY": "eg", "SLV": "sv", "GNQ": "gq", "ERI": "er", "EST": "ee", "SWZ": "sz", "ETH": "et", "FJI": "fj", "FIN": "fi",
+    "FRA": "fr", "GAB": "ga", "GMB": "gm", "GEO": "ge", "DEU": "de", "GHA": "gh", "GRC": "gr", "GRD": "gd", "GTM": "gt", "GIN": "gn",
+    "GNB": "gw", "GUY": "gy", "HTI": "ht", "HND": "hn", "HUN": "hu", "ISL": "is", "IND": "in", "IDN": "id", "IRN": "ir", "IRQ": "iq",
+    "IRL": "ie", "ISR": "il", "ITA": "it", "JAM": "jm", "JPN": "jp", "JOR": "jo", "KAZ": "kz", "KEN": "ke", "KIR": "ki", "PRK": "kp",
+    "KOR": "kr", "KWT": "kw", "KGZ": "kg", "LAO": "la", "LVA": "lv", "LBN": "lb", "LSO": "ls", "LBR": "lr", "LBY": "ly", "LIE": "li",
+    "LTU": "lt", "LUX": "lu", "MDG": "mg", "MWI": "mw", "MYS": "my", "MDV": "mv", "MLI": "ml", "MLT": "mt", "MHL": "mh", "MRT": "mr",
+    "MUS": "mu", "MEX": "mx", "FSM": "fm", "MDA": "md", "MCO": "mc", "MNG": "mn", "MNE": "me", "MAR": "ma", "MOZ": "mz", "MMR": "mm",
+    "NAM": "na", "NRU": "nr", "NPL": "np", "NLD": "nl", "NZL": "nz", "NIC": "ni", "NER": "ne", "NGA": "ng", "MKD": "mk", "NOR": "no",
+    "OMN": "om", "PAK": "pk", "PLW": "pw", "PAN": "pa", "PNG": "pg", "PRY": "py", "PER": "pe", "PHL": "ph", "POL": "pl", "PRT": "pt",
+    "QAT": "qa", "ROU": "ro", "RUS": "ru", "RWA": "rw", "KNA": "kn", "LCA": "lc", "VCT": "vc", "WSM": "ws", "SMR": "sm", "STP": "st",
+    "SAU": "sa", "SEN": "sn", "SRB": "rs", "SYC": "sc", "SLE": "sl", "SGP": "sg", "SVK": "sk", "SVN": "si", "SLB": "sb", "SOM": "so",
+    "ZAF": "za", "SSD": "ss", "ESP": "es", "LKA": "lk", "SDN": "sd", "SUR": "sr", "SWE": "se", "CHE": "ch", "SYR": "sy", "TWN": "tw",
+    "TJK": "tj", "TZA": "tz", "THA": "th", "TLS": "tl", "TGO": "tg", "TON": "to", "TTO": "tt", "TUN": "tn", "TUR": "tr", "TKM": "tm",
+    "TUV": "tv", "UGA": "ug", "UKR": "ua", "ARE": "ae", "GBR": "gb", "USA": "us", "URY": "uy", "UZB": "uz", "VUT": "vu", "VAT": "va",
+    "VEN": "ve", "VNM": "vn", "YEM": "ye", "ZMB": "zm", "ZWE": "zw"
+}
+
 # Mapping von XML-Tag zu lesbarem Label (alle bekannten Felder)
 FIELD_LABELS = {
     "id": None,  # Nicht anzeigen
@@ -428,27 +452,44 @@ for d in states:
             return [clean_obj(i) for i in obj]
         return obj
 
-    jsonld = json.dumps(clean_obj(jsonld_obj), ensure_ascii=False)
+    json_ld = json.dumps(clean_obj(jsonld_obj), ensure_ascii=False)
 
+    # Flagge bestimmen
+    autokennz = d.get("autokennz", "")
+    iso3 = ""
+    if "|" in autokennz:
+        iso3 = autokennz.split("|")[-1].strip()
+    elif autokennz:
+        iso3 = autokennz.strip()
+    
+    flag_code = ISO3_TO_ISO2.get(iso3, "").lower()
+    
+    # Render State
     html = tpl_state.render(
         title=f"{name} – {SITE_NAME}",
-        description=description,
-        canonical=canonical,
+        description=f"Fakten zu {name}.",
+        canonical=f"{BASE_URL}{url_path}",
         name=name,
-        subtitle=subtitle or "",
+        subtitle=str(d.get("sname") or ""),
         sections=sections,
-        jsonld=jsonld,
-        updated=today,
-        SITE_ROOT=SITE_ROOT
+        updated=str(d.get("stand") or ""),
+        SITE_ROOT=SITE_ROOT,
+        jsonld=json_ld,
+        flag_code=flag_code
     )
-
-    out_file = OUT_DIR / "staaten" / slug / "index.html"
+    out_file = OUT_DIR / url_path.lstrip("/") / "index.html"
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(html, encoding="utf-8")
-
-    hint = hauptstadt or d.get("tzone") or ""
+    
+    # Metadata for index
+    hint = d.get("hauptstadt") or d.get("flaeche") or ""
     if isinstance(hint, list): hint = hint[0]
-    index_cards.append({"name": name, "url": url_path, "hint": str(hint)})
+    index_cards.append({
+        "name": name, 
+        "url": url_path, 
+        "hint": str(hint),
+        "flag_code": flag_code
+    })
 
 # Index JSON-LD
 index_jsonld_obj = {

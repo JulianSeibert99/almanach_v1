@@ -253,6 +253,18 @@ main.container {
 
 .hero-card h1 {
     margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.hero-card h1 .flag-icon {
+    width: 48px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-sm);
 }
 
 /* ===== META TEXT ===== */
@@ -341,7 +353,18 @@ main.container {
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     box-shadow: none;
+}
+
+.state-card .flag-icon {
+    width: 28px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-sm);
 }
 
 .state-card::after {
