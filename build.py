@@ -14,7 +14,7 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8080").rstrip("/")
 # SITE_ROOT extrahiert den Pfad-Teil (z. B. /almanach_v1), falls vorhanden
 _parsed_url = urlparse(BASE_URL)
 SITE_ROOT = _parsed_url.path.rstrip("/")
-SITE_NAME = "Staaten-Wiki"
+SITE_NAME = "Der neue Kosmos Welt-Almanach & Atlas 2026"
 
 # Mapping von XML-Tag zu lesbarem Label (alle bekannten Felder)
 FIELD_LABELS = {

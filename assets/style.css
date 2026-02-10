@@ -1,29 +1,29 @@
 /* ===== DESIGN TOKENS ===== */
 :root {
-    /* Farben - Premium Dark Theme */
-    --bg-primary: #0a0e17;
-    --bg-secondary: #0f1520;
-    --bg-card: #141c2b;
-    --bg-card-hover: #1a2436;
-    --bg-elevated: #1c2638;
+    /* Farben - Premium Light Theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --bg-elevated: #f8fafc;
 
-    /* Akzentfarben */
-    --accent-primary: #3b82f6;
-    --accent-secondary: #6366f1;
-    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
-    --accent-glow: rgba(59, 130, 246, 0.15);
+    /* Akzentfarben - Blau & Mittelblau */
+    --accent-primary: #1e328b;
+    --accent-secondary: #3b82f6;
+    --accent-gradient: linear-gradient(135deg, #1e328b 0%, #2563eb 50%, #3b82f6 100%);
+    --accent-glow: rgba(30, 50, 139, 0.08);
 
     /* Text */
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
     --text-muted: #64748b;
 
     /* Borders & Effekte */
-    --border-subtle: rgba(148, 163, 184, 0.1);
-    --border-visible: rgba(148, 163, 184, 0.2);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --border-subtle: #e2e8f0;
+    --border-visible: #cbd5e1;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     --shadow-glow: 0 0 40px var(--accent-glow);
 
     /* Spacing */
@@ -78,8 +78,8 @@ body::before {
     left: 0;
     right: 0;
     height: 60vh;
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(30, 50, 139, 0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
     pointer-events: none;
     z-index: -1;
 }
@@ -97,7 +97,7 @@ h6 {
 }
 
 h1 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: clamp(2rem, 5vw, 2.5rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     background: var(--accent-gradient);
@@ -107,15 +107,32 @@ h1 {
 }
 
 h2 {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     margin-bottom: var(--space-md);
     display: flex;
     align-items: center;
     gap: var(--space-sm);
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+}
+
+h4 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-sm);
+}
+
+h5 {
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+h6 {
+    font-size: 0.875rem;
+    margin-bottom: var(--space-xs);
 }
 
 h2::before {
@@ -156,7 +173,7 @@ a:hover {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10, 14, 23, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border-subtle);
@@ -252,7 +269,7 @@ main.container {
 
 /* ===== META TEXT ===== */
 .meta {
-    color: var(--text-muted);
+    color: #64748b;
     font-size: 0.9375rem;
 }
 
@@ -338,10 +355,10 @@ main.container {
 }
 
 .state-card:hover {
-    background: var(--bg-card-hover);
+    background: var(--bg-card);
     border-color: var(--accent-primary);
-    box-shadow: var(--shadow-md), 0 0 20px var(--accent-glow);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(37, 99, 235, 0.1);
+    transform: translateY(-3px);
 }
 
 .state-card:hover::after {
@@ -390,17 +407,15 @@ article.card>.subtitle {
 
 /* ===== SEKTIONEN ===== */
 section {
-    background: var(--bg-card);
+    background: #ffffff;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
-    transition: border-color var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
 }
 
-section:hover {
-    border-color: var(--border-visible);
-}
 
 /* ===== FAKTEN-TABELLE ===== */
 .facts {
@@ -452,13 +467,17 @@ section:hover {
 /* Level 1: Status/Kategorie (z.B. gueber2) - Symmetrische Abstände */
 .facts tr.subheader.level-1 td {
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
     color: var(--text-secondary);
-    background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
-    padding-top: var(--space-md);
+    background: none;
+    padding-top: var(--space-2xl);
     padding-bottom: var(--space-md);
     letter-spacing: 0.3px;
     border-top: 1px solid var(--border-subtle);
+}
+
+.facts tr.subheader.level-1:hover {
+    background: none;
 }
 
 /* Pfeil entfernt wie gewünscht */
@@ -469,13 +488,16 @@ section:hover {
 /* Level 2: Das konkrete Gebiet (z.B. Französisch-Guayana) */
 .facts tr.subheader.level-2 td {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--accent-primary);
     background: none;
-    padding-left: var(--space-md);
     padding-top: var(--space-2xl);
     padding-bottom: var(--space-xs);
     border-bottom: 2px solid var(--accent-glow);
+}
+
+.facts tr.subheader.level-2:hover {
+    background: none;
 }
 
 /* Reduzierter Abstand nach oben, wenn Level 2 das erste Element ist oder direkt auf Level 1 folgt */
