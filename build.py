@@ -130,6 +130,17 @@ def parse_element(elem):
         # Blatt-Knoten: Text zurückgeben
         return (elem.text or "").strip()
 
+def get_sort_key(text):
+    """
+    Erzeugt einen Sortier-Schlüssel, der Umlaute normalisiert (Ä -> A, etc.).
+    """
+    if not text:
+        return ""
+    # NFD zerlegt Ä in A + Diakritikum
+    normalized = unicodedata.normalize('NFD', str(text).lower())
+    # Filtere Diakritika heraus
+    return "".join(c for c in normalized if not unicodedata.combining(c))
+
 def recursive_render(key, val, level=0):
     """
     Erzeugt eine flache Liste von (Label, Value)-Tupeln aus verschachtelten Strukturen.
@@ -538,7 +549,7 @@ index_html = tpl_index.render(
     title=f"Alle Staaten der Welt – {SITE_NAME}",
     description=index_description,
     canonical=f"{BASE_URL}/",
-    states=sorted(index_cards, key=lambda x: x["name"].lower()),
+    states=sorted(index_cards, key=lambda x: get_sort_key(x["name"])),
     SITE_ROOT=SITE_ROOT,
     SITE_NAME=SITE_NAME,
     jsonld=index_jsonld
@@ -550,7 +561,7 @@ index_html = tpl_index.render(
 urls = [f"{BASE_URL}/"] + [f"{BASE_URL}{c['url']}" for c in index_cards]
 sitemap_items = "\n".join(
     f"<url><loc>{u}</loc></url>"
-    for u in sorted(urls)
+    for u in sorted(urls, key=get_sort_key)
 )
 sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
