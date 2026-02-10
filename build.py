@@ -395,7 +395,41 @@ for d in states:
     add_faq("Welche Sprache spricht man in {}?", "amtssprache", "Die Amtssprache ist")
     add_faq("Wie groß ist {}?", "flaeche", "Die Fläche beträgt")
 
+    # Flagge bestimmen
+    autokennz = d.get("autokennz", "")
+    iso3 = ""
+    if "|" in autokennz:
+        iso3 = autokennz.split("|")[-1].strip()
+    elif autokennz:
+        iso3 = autokennz.strip()
+    flag_code = ISO3_TO_ISO2.get(iso3, "").lower()
+
+    # Flaggen-URL für og:image und Schema
+    flag_url = f"https://flagcdn.com/w640/{flag_code}.png" if flag_code else None
+
     # JSON-LD (WebPage + Country + Breadcrumb + FAQPage)
+    country_schema = {
+        "@type": "Country",
+        "@id": f"{canonical}#country",
+        "name": name,
+        "alternateName": subtitle or None,
+        "description": description,
+        "identifier": get_single_value(d.get("id")) or None,
+    }
+    # Enriched Country properties
+    if hauptstadt:
+        country_schema["capital"] = {"@type": "City", "name": hauptstadt}
+    if einw:
+        country_schema["population"] = einw
+    flaeche = get_single_value(d.get("flaeche"))
+    if flaeche:
+        country_schema["areaServed"] = flaeche
+    amtssprache = get_single_value(d.get("amtssprache"))
+    if amtssprache:
+        country_schema["knowsLanguage"] = amtssprache
+    if flag_url:
+        country_schema["image"] = flag_url
+
     graph_nodes = [
         {
             "@type": "WebPage",
@@ -403,17 +437,11 @@ for d in states:
             "url": canonical,
             "name": f"{name} – {SITE_NAME}",
             "description": description,
+            "inLanguage": "de",
             "breadcrumb": {"@id": f"{canonical}#breadcrumb"},
             "mainEntity": {"@id": f"{canonical}#country"}
         },
-        {
-            "@type": "Country",
-            "@id": f"{canonical}#country",
-            "name": name,
-            "alternateName": subtitle or None,
-            "description": description,
-            "identifier": get_single_value(d.get("id")) or None
-        },
+        country_schema,
         {
             "@type": "BreadcrumbList",
             "@id": f"{canonical}#breadcrumb",
@@ -421,7 +449,7 @@ for d in states:
                 {
                     "@type": "ListItem",
                     "position": 1,
-                    "name": "Start",
+                    "name": "Alle Länder",
                     "item": BASE_URL + "/"
                 },
                 {
@@ -454,28 +482,22 @@ for d in states:
 
     json_ld = json.dumps(clean_obj(jsonld_obj), ensure_ascii=False)
 
-    # Flagge bestimmen
-    autokennz = d.get("autokennz", "")
-    iso3 = ""
-    if "|" in autokennz:
-        iso3 = autokennz.split("|")[-1].strip()
-    elif autokennz:
-        iso3 = autokennz.strip()
-    
-    flag_code = ISO3_TO_ISO2.get(iso3, "").lower()
+
     
     # Render State
     html = tpl_state.render(
         title=f"{name} – {SITE_NAME}",
-        description=f"Fakten zu {name}.",
+        description=description,
         canonical=f"{BASE_URL}{url_path}",
         name=name,
         subtitle=str(d.get("sname") or ""),
         sections=sections,
         updated=str(d.get("stand") or ""),
         SITE_ROOT=SITE_ROOT,
+        SITE_NAME=SITE_NAME,
         jsonld=json_ld,
-        flag_code=flag_code
+        flag_code=flag_code,
+        og_image=flag_url,
     )
     out_file = OUT_DIR / url_path.lstrip("/") / "index.html"
     out_file.parent.mkdir(parents=True, exist_ok=True)
@@ -510,20 +532,23 @@ index_jsonld_obj = {
 index_jsonld = json.dumps(index_jsonld_obj, ensure_ascii=False)
 
 # Index
+index_description = f"Steckbriefe, Fakten und Daten zu allen {len(index_cards)} Staaten der Welt – Hauptstädte, Einwohnerzahlen, Wirtschaft, Geografie und mehr."
 index_html = tpl_index.render(
-    title=f"Staaten – {SITE_NAME}",
-    description="Übersicht aller Staaten.",
+    title=f"Alle Staaten der Welt – {SITE_NAME}",
+    description=index_description,
     canonical=f"{BASE_URL}/",
     states=sorted(index_cards, key=lambda x: x["name"].lower()),
     SITE_ROOT=SITE_ROOT,
+    SITE_NAME=SITE_NAME,
     jsonld=index_jsonld
 )
 (OUT_DIR / "index.html").write_text(index_html, encoding="utf-8")
 
 # sitemap.xml + robots.txt (Google empfiehlt Sitemaps bauen & einreichen)
+# lastmod wird bewusst weggelassen – Google empfiehlt: nur echte Änderungsdaten verwenden
 urls = [f"{BASE_URL}/"] + [f"{BASE_URL}{c['url']}" for c in index_cards]
 sitemap_items = "\n".join(
-    f"<url><loc>{u}</loc><lastmod>{today}</lastmod></url>"
+    f"<url><loc>{u}</loc></url>"
     for u in sorted(urls)
 )
 sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>

@@ -227,6 +227,66 @@ main.container {
     padding-bottom: var(--space-2xl);
 }
 
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    margin-bottom: var(--space-lg);
+}
+
+.breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.breadcrumb li+li::before {
+    content: '›';
+    margin-right: var(--space-xs);
+    color: var(--text-muted);
+}
+
+.breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.breadcrumb a:hover {
+    color: var(--accent-secondary);
+}
+
+.breadcrumb [aria-current="page"] {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ===== INTRO TEXT ===== */
+.intro-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-top: var(--space-sm);
+    max-width: 640px;
+}
+
+/* ===== SCREEN READER ONLY ===== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* ===== CARDS ===== */
 .card {
     background: var(--bg-card);
@@ -262,11 +322,9 @@ main.container {
 .card h1 .flag-icon {
     height: 1em;
     width: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+    max-width: 1.5em;
+    object-fit: contain;
     border-radius: 4px;
-    border: 1px solid #d1d5db;
-    box-shadow: var(--shadow-sm);
     flex-shrink: 0;
 }
 
@@ -363,10 +421,10 @@ main.container {
 
 .state-card .flag-icon {
     width: 28px;
-    height: 20px;
-    object-fit: cover;
+    height: auto;
+    max-height: 28px;
+    object-fit: contain;
     border-radius: 2px;
-    border: 1px solid var(--border-subtle);
     margin-bottom: var(--space-sm);
 }
 
@@ -724,5 +782,4 @@ section:nth-of-type(5) {
     margin: var(--space-lg) 0;
 }
 
-/* ===== GOOGLE FONTS IMPORT ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Google Fonts loaded via <link> in HTML head for better performance */

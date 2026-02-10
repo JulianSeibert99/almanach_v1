@@ -6,16 +6,23 @@
 {% endblock %}
 
 {% block content %}
-<article class="card">
-    <h1>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+        <li><a href="{{ SITE_ROOT }}/">Alle Länder</a></li>
+        <li aria-current="page">{{ name }}</li>
+    </ol>
+</nav>
+
+<article class="card" itemscope itemtype="https://schema.org/Article">
+    <h1 itemprop="headline">
         {% if flag_code %}
         <img src="https://flagcdn.com/w80/{{ flag_code }}.png" srcset="https://flagcdn.com/w160/{{ flag_code }}.png 2x"
-            class="flag-icon" alt="Flagge von {{ name }}">
+            class="flag-icon" alt="Flagge von {{ name }}" loading="eager">
         {% endif %}
         {{ name }}
     </h1>
     {% if subtitle %}
-    <p class="subtitle">{{ subtitle }}</p>
+    <p class="subtitle" itemprop="alternativeHeadline">{{ subtitle }}</p>
     {% endif %}
 
     {% for section_title, facts in sections %}
@@ -43,11 +50,12 @@
 
     {% if updated %}
     <p class="updated-info">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
         </svg>
-        Letzte Aktualisierung: {{ updated }}
+        Letzte Aktualisierung: <time itemprop="dateModified" datetime="{{ updated }}">{{ updated }}</time>
     </p>
     {% endif %}
 </article>

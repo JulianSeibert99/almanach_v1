@@ -14,10 +14,23 @@
     <meta property="og:description" content="{{ description }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ canonical }}" />
+    <meta property="og:locale" content="de_DE" />
+    {% if SITE_NAME %}
+    <meta property="og:site_name" content="{{ SITE_NAME }}" />{% endif %}
+    {% if og_image %}
+    <meta property="og:image" content="{{ og_image }}" />{% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ title }}" />
+    <meta name="twitter:description" content="{{ description }}" />
+    {% if og_image %}
+    <meta name="twitter:image" content="{{ og_image }}" />{% endif %}
 
     <!-- Preload Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
 
     <link rel="stylesheet" href="{{ SITE_ROOT }}/assets/style.css" />
     {% block head %}{% endblock %}

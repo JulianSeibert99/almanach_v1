@@ -8,21 +8,26 @@
 <div class="hero-card">
     <h1>Staaten der Welt</h1>
     <p class="subtitle">Umfassende Fakten zu {{ states|length }} Ländern</p>
+    <p class="intro-text">Entdecke detaillierte Steckbriefe aller {{ states|length }} Staaten der Welt – von
+        Hauptstädten und Einwohnerzahlen über Wirtschaftsdaten bis hin zu Geografie und Politik.</p>
     <div class="search-wrapper">
-        <input type="search" class="search" id="q" placeholder="Land suchen…" oninput="filterList()"
-            autocomplete="off" />
+        <label for="q" class="sr-only">Land suchen</label>
+        <input type="search" class="search" id="q" placeholder="Land suchen…" oninput="filterList()" autocomplete="off"
+            aria-label="Staaten durchsuchen" />
     </div>
 </div>
 
-<section class="grid" id="list">
+<section class="grid" id="list" aria-label="Liste aller Staaten">
     <div id="no-results" class="no-results" style="display: none;">
         Keine Länder gefunden, die deiner Suche entsprechen.
     </div>
     {% for s in states %}
-    <a class="state-card" data-name="{{ s.name|lower }}" href="{{ SITE_ROOT }}{{ s.url }}">
+    <a class="state-card" data-name="{{ s.name|lower }}" href="{{ SITE_ROOT }}{{ s.url }}"
+        aria-label="Steckbrief: {{ s.name }}">
         {% if s.flag_code %}
         <img src="https://flagcdn.com/w40/{{ s.flag_code }}.png"
-            srcset="https://flagcdn.com/w80/{{ s.flag_code }}.png 2x" class="flag-icon" alt="Flagge von {{ s.name }}">
+            srcset="https://flagcdn.com/w80/{{ s.flag_code }}.png 2x" class="flag-icon" alt="Flagge von {{ s.name }}"
+            loading="lazy" width="40">
         {% endif %}
         <h2>{{ s.name }}</h2>
         <div class="meta">{{ s.hint }}</div>
