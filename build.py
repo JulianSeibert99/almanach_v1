@@ -37,7 +37,8 @@ ISO3_TO_ISO2 = {
     "ZAF": "za", "SSD": "ss", "ESP": "es", "LKA": "lk", "SDN": "sd", "SUR": "sr", "SWE": "se", "CHE": "ch", "SYR": "sy", "TWN": "tw",
     "TJK": "tj", "TZA": "tz", "THA": "th", "TLS": "tl", "TGO": "tg", "TON": "to", "TTO": "tt", "TUN": "tn", "TUR": "tr", "TKM": "tm",
     "TUV": "tv", "UGA": "ug", "UKR": "ua", "ARE": "ae", "GBR": "gb", "USA": "us", "URY": "uy", "UZB": "uz", "VUT": "vu", "VAT": "va",
-    "VEN": "ve", "VNM": "vn", "YEM": "ye", "ZMB": "zm", "ZWE": "zw"
+    "VEN": "ve", "VNM": "vn", "YEM": "ye", "ZMB": "zm", "ZWE": "zw",
+    "PSE": "ps", "KOS": "xk"
 }
 
 # Mapping von XML-Tag zu lesbarem Label (alle bekannten Felder)
