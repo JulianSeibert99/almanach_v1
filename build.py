@@ -339,6 +339,10 @@ if Path("assets").exists():
         shutil.rmtree(OUT_DIR / "assets")
     shutil.copytree("assets", OUT_DIR / "assets")
 
+# Google-Verifizierung kopieren (für Search Console)
+for f in Path(".").glob("google*.html"):
+    shutil.copy2(f, OUT_DIR / f.name)
+
 # Slugs bauen
 used_slugs = {}
 def unique_slug(name: str) -> str:
