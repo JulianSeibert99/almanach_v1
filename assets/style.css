@@ -530,7 +530,7 @@ section {
 }
 
 .facts th {
-    width: 200px;
+    width: 250px;
     color: var(--text-muted);
     font-weight: 600;
     font-size: 0.875rem;
