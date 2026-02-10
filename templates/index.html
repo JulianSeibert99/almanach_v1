@@ -15,6 +15,9 @@
 </div>
 
 <section class="grid" id="list">
+    <div id="no-results" class="no-results" style="display: none;">
+        Keine Länder gefunden, die deiner Suche entsprechen.
+    </div>
     {% for s in states %}
     <a class="state-card" data-name="{{ s.name|lower }}" href="{{ SITE_ROOT }}{{ s.url }}">
         <h2>{{ s.name }}</h2>
@@ -27,12 +30,17 @@
     function filterList() {
         const q = (document.getElementById("q").value || "").toLowerCase().trim();
         const cards = document.querySelectorAll("#list [data-name]");
+        const noResults = document.getElementById("no-results");
         let visibleCount = 0;
 
         for (const el of cards) {
             const matches = el.dataset.name.includes(q);
             el.style.display = matches ? "" : "none";
             if (matches) visibleCount++;
+        }
+
+        if (noResults) {
+            noResults.style.display = (visibleCount === 0 && q !== "") ? "block" : "none";
         }
     }
 

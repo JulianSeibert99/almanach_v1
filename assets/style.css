@@ -63,11 +63,12 @@ html {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
+    background-color: var(--bg-primary);
     color: var(--text-primary);
-    background: var(--bg-primary);
+    line-height: 1.6;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Subtiler animierter Hintergrund-Gradient */
@@ -156,7 +157,12 @@ a:hover {
 .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: var(--space-lg);
+    padding: 0 var(--space-lg);
+    width: 100%;
+}
+
+main.container {
+    flex: 1;
 }
 
 @media (max-width: 768px) {
@@ -297,6 +303,19 @@ main.container {
     color: var(--text-muted);
 }
 
+.search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") center no-repeat;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.search::-webkit-search-cancel-button:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+}
+
 .search:focus {
     border-color: var(--accent-secondary);
     box-shadow: 0 0 0 3px rgba(0, 129, 162, 0.15);
@@ -429,7 +448,7 @@ section {
 .facts th {
     width: 200px;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 0.875rem;
 }
 
@@ -449,6 +468,7 @@ section {
 /* Level 1: Status/Kategorie (z.B. gueber2) - Symmetrische Abstände */
 .facts tr.subheader.level-1 td {
     font-weight: 600;
+    font-style: italic;
     font-size: 1.2rem;
     color: var(--text-secondary);
     background: none;
@@ -662,6 +682,19 @@ section:nth-of-type(4) {
 
 section:nth-of-type(5) {
     animation-delay: 0.3s;
+}
+
+/* Keine Ergebnisse Anzeige */
+.no-results {
+    grid-column: 1 / -1;
+    padding: var(--space-2xl) var(--space-lg);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--border-visible);
+    margin: var(--space-lg) 0;
 }
 
 /* ===== GOOGLE FONTS IMPORT ===== */

@@ -20,16 +20,16 @@ SITE_NAME = "Der neue Kosmos Welt-Almanach & Atlas 2026"
 FIELD_LABELS = {
     "id": None,  # Nicht anzeigen
     "hname": None,  # Wird als H1 verwendet
-    "sname": "Offizieller Name",
+    "sname": "Staatenname",
     "tzone": "Zeitzone",
-    "flaeche": "Fläche",
-    "einwzahl": "Einwohnerzahl",
-    "einwdicht": "Bevölkerungsdichte",
+    "flaeche": "Fläche in km²",
+    "einwzahl": "Anzahl der Einwohner",
+    "einwdicht": "Einwohner pro km²",
     "hauptstadt": "Hauptstadt",
-    "amtssprache": "Amtssprache(n)",
-    "gliederung": "Administrative Gliederung",
+    "amtssprache": "Amtssprache",
+    "gliederung": "Verwaltungsgliederung",
     "staedte": "Wichtige Städte",
-    "autokennz": "Autokennzeichen",
+    "autokennz": "Autokennzeichen | ISO-Code",
     "waehrung": "Währung",
     "natfeier": "Nationalfeiertag",
     "geolage": "Geografische Lage",
@@ -40,36 +40,36 @@ FIELD_LABELS = {
     "regchef": "Regierungschef",
     "aussen": "Außenminister",
     "botschaft": "Botschaft",
-    "parteireg": "Regierungspartei(en)",
+    "parteireg": "Regierungskoalition",
     "legislative": "Legislative",
-    "verfassung": "Verfassung",
+    "verfassung": "Jahr der Verfassung",
     "wahlrecht": "Wahlrecht",
-    "bevanteil": "Bevölkerungsanteile",
-    "bevverteil": "Stadt/Land-Verteilung",
-    "bevwachst": "Bevölkerungswachstum",
-    "altmedian": "Medianalter",
+    "bevanteil": "Alter",
+    "bevverteil": "Verteilung",
+    "bevwachst": "Wachstum",
+    "altmedian": "Altersmedian",
     "lebenserw": "Lebenserwartung",
-    "alpharate": "Alphabetisierungsrate",
-    "ethgruppen": "Ethnische Gruppen",
-    "religion": "Religion(en)",
-    "sprache": "Sprache(n)",
-    "gesamtbip": "BIP (gesamt)",
+    "alpharate": "Alphabetenrate",
+    "ethgruppen": "Gruppen",
+    "religion": "Religionen",
+    "sprache": "Sprachen",
+    "gesamtbip": "BIP",
     "wachstbip": "BIP-Wachstum",
-    "einwbne": "BIP pro Kopf",
+    "einwbne": "BIP/Kopf",
     "inflation": "Inflation",
     "ausshandel": "Außenhandel",
-    "sektorbip": "BIP nach Sektoren",
+    "sektorbip": "Anteil BIP nach Sektoren",
     "arblos": "Arbeitslosenquote",
-    "energverbr": "Energieverbrauch",
-    "erneuerbar": "Erneuerbare Energien",
+    "energverbr": "CO₂-Emission/Kopf",
+    "erneuerbar": "Stromerzeugung aus Erneuerbarer Energie",
     # Gebiet-Felder (für Außengebiete)
     "gid": None,  # Nicht anzeigen
     "ghname": "Name",
-    "gflaeche": "Fläche",
-    "geinwzahl": "Einwohner",
+    "gflaeche": "Fläche in km²",
+    "geinwzahl": "Anzahl der Einwohner",
     "ghauptstadt": "Hauptstadt",
     "gstatus": "Status",
-    "gregierung": "Regierung",
+    "gregierung": "Regierungschef",
 }
 
 # Gliederung für Sektionen (Gruppierung der Felder)
@@ -159,19 +159,7 @@ def recursive_render(key, val, level=0):
                 # Wir sortieren die Keys innerhalb des Gebiets
                 # Wir sortieren die Keys nur, wenn wir spezielle Prioritäten haben, 
                 # sonst bewahren wir die XML-Reihenfolge (Dict insertion order).
-                def sort_key_internal(k):
-                    prio = 100
-                    if k == "gueber1": prio = 1
-                    elif k == "gueber2": prio = 2
-                    elif k in ["ghname", "hname", "name"]: prio = 3
-                    return (prio, k)
-                
-                # Prüfen, ob wir sortier-relevante Keys haben, sonst Original-Reihenfolge
-                prio_keys = [k for k in sub_item.keys() if k in ["gueber1", "gueber2", "ghname", "hname", "name"]]
-                if prio_keys:
-                    keys_to_render = sorted(sub_item.keys(), key=sort_key_internal)
-                else:
-                    keys_to_render = sub_item.keys()
+                keys_to_render = sub_item.keys()
                     
                 for k in keys_to_render:
                     items.extend(recursive_render(k, sub_item[k], level + 1))
@@ -183,18 +171,7 @@ def recursive_render(key, val, level=0):
         if key != "gebiete": # Container-Tags oft redundant, wenn sie gueberX enthalten
             items.append((display_label, ""))
         
-        def sort_key_dict(k):
-            prio = 100
-            if k == "gueber1": prio = 1
-            elif k == "gueber2": prio = 2
-            elif k in ["ghname", "hname", "name"]: prio = 3
-            return (prio, k)
-
-        prio_keys = [k for k in val.keys() if k in ["gueber1", "gueber2", "ghname", "hname", "name"]]
-        if prio_keys:
-            keys_to_render = sorted(val.keys(), key=sort_key_dict)
-        else:
-            keys_to_render = val.keys()
+        keys_to_render = val.keys()
             
         for k in keys_to_render:
             items.extend(recursive_render(k, val[k], level + 1 if key != "gebiete" else level))
@@ -260,12 +237,7 @@ def build_sections(d):
                 if isinstance(item, dict):
                     # Den Namen (ghname) als Subheader level 2 rendern
                     # plus alle anderen Felder
-                    def sort_key_internal(k):
-                        prio = 100
-                        if k == "ghname": prio = 1
-                        return (prio, k)
-                    
-                    for k in sorted(item.keys(), key=sort_key_internal):
+                    for k in item.keys():
                         block_facts.extend(recursive_render(k, item[k], level=0))
                 elif item:
                     block_facts.append(("Info", str(item)))
