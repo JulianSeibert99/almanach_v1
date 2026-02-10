@@ -60,6 +60,7 @@ html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -161,7 +162,19 @@ main.container {
     .container {
         padding: var(--space-md);
     }
+
+    /* Padding auf 0 belassen, damit auch bei schmaleren Tablet-Breiten 
+       noch zwei Spalten nebeneinander passen (verhindert den "Sprung") */
+    #list {
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        border: none;
+        margin-bottom: 0;
+    }
 }
+
+
 
 /* ===== HEADER ===== */
 .site-header {
@@ -189,6 +202,7 @@ main.container {
     letter-spacing: -0.01em;
     color: var(--accent-primary);
     transition: opacity var(--transition-fast);
+    line-height: normal;
 }
 
 .brand:hover {
@@ -198,6 +212,7 @@ main.container {
 .nav {
     display: flex;
     gap: var(--space-lg);
+    line-height: normal;
 }
 
 .nav a {
