@@ -484,7 +484,7 @@ index_jsonld_obj = {
     "@type": "WebSite",
     "url": BASE_URL + "/",
     "name": SITE_NAME,
-    "description": "Umfassende Fakten und Statistiken zu allen Staaten der Welt.",
+    "description": "Umfassende Fakten zu allen Staaten der Welt.",
     "potentialAction": {
         "@type": "SearchAction",
         "target": {
