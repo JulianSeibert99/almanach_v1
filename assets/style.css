@@ -251,20 +251,23 @@ main.container {
     position: relative;
 }
 
-.hero-card h1 {
+.card h1 {
     margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
     line-height: 1.2;
 }
 
-.hero-card h1 .flag-icon {
-    width: 48px;
-    height: 32px;
+.card h1 .flag-icon {
+    height: 1em;
+    width: auto;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     border-radius: 4px;
     border: 1px solid #d1d5db;
     box-shadow: var(--shadow-sm);
-    vertical-align: middle;
-    margin-right: var(--space-md);
+    flex-shrink: 0;
 }
 
 /* ===== META TEXT ===== */
