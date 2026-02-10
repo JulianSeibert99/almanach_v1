@@ -259,7 +259,7 @@ main.container {
 }
 
 .hero-card h1 .flag-icon {
-    height: 0.65em;
+    height: 0.58em;
     width: auto;
     aspect-ratio: 3 / 2;
     object-fit: cover;
