@@ -320,12 +320,12 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 (OUT_DIR / "assets").mkdir(parents=True, exist_ok=True)
 (OUT_DIR / "staaten").mkdir(parents=True, exist_ok=True)
 
-# CSS kopieren
-if Path("assets/style.css").exists():
-    (OUT_DIR / "assets" / "style.css").write_text(
-        Path("assets/style.css").read_text(encoding="utf-8"),
-        encoding="utf-8"
-    )
+# Assets kopieren (rekursiv für Fonts etc.)
+import shutil
+if Path("assets").exists():
+    if (OUT_DIR / "assets").exists():
+        shutil.rmtree(OUT_DIR / "assets")
+    shutil.copytree("assets", OUT_DIR / "assets")
 
 # Slugs bauen
 used_slugs = {}
