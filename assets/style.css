@@ -263,7 +263,7 @@ main.container {
     color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.6;
-    margin-top: var(--space-sm);
+    margin-top: var(--space-lg);
     max-width: 640px;
 }
 
