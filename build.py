@@ -554,14 +554,14 @@ for d in states:
 index_jsonld_obj = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "url": BASE_URL + "/",
+    "url": BASE_URL,
     "name": SITE_NAME,
     "description": "Umfassende Fakten zu allen Staaten der Welt.",
     "potentialAction": {
         "@type": "SearchAction",
         "target": {
             "@type": "EntryPoint",
-            "urlTemplate": BASE_URL + "/?q={search_term_string}"
+            "urlTemplate": BASE_URL + "?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
     }
