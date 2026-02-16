@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from urllib.parse import urlparse
 import os
+from typing import Dict, List, Any
 
 IN_FILE = "staaten-bpb.xml"
 OUT_DIR = Path("dist")
@@ -313,7 +314,7 @@ tpl_index = env.get_template("index.html")
 
 # Daten lesen (Generisch)
 root = ET.fromstring(decode_xml(IN_FILE))
-states = []
+states: List[Dict[str, Any]] = []
 
 root_elem = ET.fromstring(decode_xml(IN_FILE))
 found_states = root_elem.findall("./staat")
@@ -364,6 +365,8 @@ today = datetime.now(timezone.utc).date().isoformat()
 index_cards = []
 
 for d in states:
+    if not isinstance(d, dict):
+        continue
     # Safely get name
     name = get_single_value(d.get("hname"))
     if not name: name = "Unbekannt"
@@ -432,19 +435,37 @@ for d in states:
         "description": description,
         "identifier": get_single_value(d.get("id")) or None,
     }
-    # Enriched Country properties
+    # Enriched Country properties (schema.org-konform)
     if hauptstadt:
-        country_schema["capital"] = {"@type": "City", "name": hauptstadt}
-    if einw:
-        country_schema["population"] = einw
-    flaeche = get_single_value(d.get("flaeche"))
-    if flaeche:
-        country_schema["areaServed"] = flaeche
-    amtssprache = get_single_value(d.get("amtssprache"))
-    if amtssprache:
-        country_schema["knowsLanguage"] = amtssprache
+        country_schema["containsPlace"] = {"@type": "City", "name": hauptstadt}
     if flag_url:
         country_schema["image"] = flag_url
+
+    # additionalProperty für Felder ohne direkte Country-Property
+    additional_props = []
+    if einw:
+        additional_props.append({
+            "@type": "PropertyValue",
+            "name": "population",
+            "value": einw
+        })
+    flaeche = get_single_value(d.get("flaeche"))
+    if flaeche:
+        additional_props.append({
+            "@type": "PropertyValue",
+            "name": "area",
+            "value": flaeche,
+            "unitText": "km²"
+        })
+    amtssprache = get_single_value(d.get("amtssprache"))
+    if amtssprache:
+        additional_props.append({
+            "@type": "PropertyValue",
+            "name": "officialLanguage",
+            "value": amtssprache
+        })
+    if additional_props:
+        country_schema["additionalProperty"] = additional_props
 
     graph_nodes = [
         {
